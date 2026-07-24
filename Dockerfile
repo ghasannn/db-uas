@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.3-apache
 
 # Install extensions
 RUN apt-get update && apt-get install -y \
@@ -13,7 +13,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY composer.json composer.lock /var/www/html/
 WORKDIR /var/www/html
 
-# Install dependencies dulu sebelum copy semua file
+# Install dependencies
 RUN COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
 
 # Copy semua file project
