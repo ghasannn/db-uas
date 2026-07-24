@@ -3,7 +3,9 @@ FROM php:8.3-apache
 # Install extensions
 RUN apt-get update && apt-get install -y \
     libzip-dev zip unzip curl git \
-    && docker-php-ext-install pdo pdo_mysql zip \
+    libpng-dev libjpeg-dev libfreetype6-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_mysql zip gd \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install composer
