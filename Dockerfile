@@ -3,17 +3,21 @@ FROM php:8.2-apache
 # Install extensions
 RUN apt-get update && apt-get install -y \
     libzip-dev zip unzip curl git \
-    && docker-php-ext-install pdo pdo_mysql zip
+    && docker-php-ext-install pdo pdo_mysql zip \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy project
-COPY . /var/www/html
+# Copy composer files dulu
+COPY composer.json composer.lock /var/www/html/
 WORKDIR /var/www/html
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
+# Install dependencies dulu sebelum copy semua file
+RUN COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
+
+# Copy semua file project
+COPY . /var/www/html
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
